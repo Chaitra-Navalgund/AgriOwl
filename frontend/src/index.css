@@ -1,0 +1,100 @@
+@import 'leaflet/dist/leaflet.css';
+@import "tailwindcss";
+@config "../tailwind.config.js";
+
+@layer base {
+  html {
+    font-size: 16px;
+    scroll-behavior: smooth;
+  }
+  body {
+    background-color: #F7FAF7;
+    color: #263238;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    -webkit-tap-highlight-color: transparent;
+    overflow-x: hidden;
+  }
+}
+
+/* Fluid Typography Utilities */
+.fluid-hero {
+  font-size: clamp(1.65rem, 4vw + 0.5rem, 3.25rem);
+  line-height: 1.15;
+  letter-spacing: -0.025em;
+}
+
+.fluid-heading {
+  font-size: clamp(1.2rem, 2vw + 0.4rem, 1.875rem);
+  line-height: 1.25;
+  letter-spacing: -0.015em;
+}
+
+.fluid-subheading {
+  font-size: clamp(1rem, 1.2vw + 0.3rem, 1.35rem);
+  line-height: 1.35;
+}
+
+.fluid-body {
+  font-size: clamp(0.875rem, 0.8vw + 0.4rem, 1.0625rem);
+  line-height: 1.55;
+}
+
+.fluid-product-title {
+  font-size: clamp(0.9375rem, 0.9vw + 0.35rem, 1.125rem);
+  line-height: 1.35;
+}
+
+.fluid-caption {
+  font-size: clamp(0.75rem, 0.5vw + 0.35rem, 0.875rem);
+  line-height: 1.4;
+}
+
+/* Word break and anti-overflow helpers */
+.text-break-words {
+  overflow-wrap: break-word;
+  word-break: break-word;
+}
+
+/* Auto-fitting Responsive Grids */
+.grid-responsive-categories {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 170px), 1fr));
+  gap: 1rem;
+}
+
+.grid-responsive-products {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
+  gap: 1.25rem;
+}
+
+.grid-responsive-trust {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr));
+  gap: 1rem;
+}
+
+/* 44px Minimum Touch Target */
+.touch-target {
+  min-height: 44px;
+}
+
+/* Custom Leaflet Map styling for smooth rendering */
+.leaflet-container {
+  width: 100%;
+  height: 100%;
+  border-radius: 1rem;
+  z-index: 10;
+}
+
+/* Pulse listening animation for Voice Search */
+@keyframes mic-pulse {
+  0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(249, 168, 37, 0.7); }
+  70% { transform: scale(1.1); box-shadow: 0 0 0 15px rgba(249, 168, 37, 0); }
+  100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(249, 168, 37, 0); }
+}
+
+.mic-animating {
+  animation: mic-pulse 1.5s infinite;
+}
+
