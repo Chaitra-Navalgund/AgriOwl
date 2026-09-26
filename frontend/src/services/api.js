@@ -25,6 +25,7 @@ export const productApi = {
   createProduct: (data) => api.post('/products/', data),
   updateProduct: (id, data) => api.put(`/products/${id}/`, data),
   deleteProduct: (id) => api.delete(`/products/${id}/`),
+  restockVariant: (variantId, data) => api.post(`/products/variants/${variantId}/restock/`, data),
 };
 
 export const orderApi = {
@@ -41,6 +42,10 @@ export const paymentApi = {
   createRazorpayOrder: (orderId) => api.post(`/orders/${orderId}/razorpay/create/`),
   // Step 2: send back what Razorpay Checkout returned so the backend can verify the signature
   verifyRazorpayPayment: (orderId, data) => api.post(`/orders/${orderId}/razorpay/verify/`, data),
+};
+
+export const couponApi = {
+  validateCoupon: (code, subtotal) => api.post('/coupons/validate/', { code, subtotal }),
 };
 
 export const mlApi = {
@@ -66,4 +71,3 @@ export const adminApi = {
 };
 
 export default api;
-

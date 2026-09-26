@@ -24,6 +24,53 @@ def get_razorpay_client():
 WAREHOUSE_LAT = 15.3647
 WAREHOUSE_LNG = 75.1240
 
+COUPONS = {
+    'KISAN10': {'type': 'percent', 'value': 10, 'max_discount': 200, 'min_order': 300, 'description': 'Farmer Special 10% Off up to ₹200 on orders above ₹300'},
+    'AGRI50': {'type': 'flat', 'value': 50, 'max_discount': 50, 'min_order': 400, 'description': 'Flat ₹50 off on min order ₹400'},
+    'HARVEST20': {'type': 'percent', 'value': 20, 'max_discount': 500, 'min_order': 1000, 'description': 'Bumper Harvest 20% off up to ₹500 on orders above ₹1000'},
+    'FIRSTBUY': {'type': 'flat', 'value': 100, 'max_discount': 100, 'min_order': 600, 'description': 'Flat ₹100 off on first order above ₹600'},
+    'ORGANIC15': {'type': 'percent', 'value': 15, 'max_discount': 300, 'min_order': 500, 'description': '15% off on bio-fertilizers above ₹500'},
+}
+
+def calculate_coupon_discount(coupon_code, subtotal):
+    if not coupon_code:
+        return 0.0, None, ''
+    code = coupon_code.strip().upper()
+    coupon = COUPONS.get(code)
+    if not coupon:
+        return 0.0, None, 'Invalid or expired coupon code. Please check and try again.'
+    if subtotal < coupon['min_order']:
+        return 0.0, None, f"Minimum subtotal of ₹{coupon['min_order']} required for coupon {code}."
+    
+    if coupon['type'] == 'percent':
+        raw_disc = subtotal * (coupon['value'] / 100.0)
+        discount = min(raw_disc, coupon['max_discount'])
+    else:
+        discount = min(coupon['value'], subtotal)
+    
+    return round(float(discount), 2), coupon, ''
+
+@api_view(['POST'])
+@permission_classes([AllowAny])
+def validate_coupon_view(request):
+    code = request.data.get('code', '').strip().upper()
+    try:
+        subtotal = float(request.data.get('subtotal', 0))
+    except (ValueError, TypeError):
+        subtotal = 0.0
+    discount, coupon, error_msg = calculate_coupon_discount(code, subtotal)
+    if error_msg:
+        return Response({'success': False, 'message': error_msg}, status=status.HTTP_400_BAD_REQUEST)
+    
+    final_amount = max(0.0, subtotal - discount)
+    return Response({
+        'success': True,
+        'code': code,
+        'discount': discount,
+        'final_amount': final_amount,
+        'description': coupon['description']
+    })
+
 @api_view(['POST'])
 @permission_classes([AllowAny])
 def create_order_view(request):
@@ -74,14 +121,21 @@ def create_order_view(request):
                     'total_price': item_total
                 })
                 
-            delivery_charge = 0 if total_amount >= 1000 else 50.0
-            grand_total = total_amount + delivery_charge
+            coupon_code = data.get('coupon_code', '').strip().upper()
+            discount_amount = 0.0
+            if coupon_code:
+                discount_amount, coupon_meta, err = calculate_coupon_discount(coupon_code, total_amount)
+                if err:
+                    return Response({'success': False, 'message': err}, status=status.HTTP_400_BAD_REQUEST)
+
+            delivery_charge = 0.0 if total_amount >= 1000 else 50.0
+            grand_total = max(0.0, total_amount - discount_amount + delivery_charge)
             
             order = Order.objects.create(
                 user=user,
                 address=address,
                 total_amount=grand_total,
-                discount=0,
+                discount=discount_amount,
                 delivery_charge=delivery_charge,
                 payment_method=payment_method,
                 # Online payments start 'Pending' and only flip to 'Paid' once

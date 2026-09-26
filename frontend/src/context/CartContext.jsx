@@ -8,10 +8,30 @@ export const CartProvider = ({ children }) => {
     return saved ? JSON.parse(saved) : [];
   });
   const [directBuyItem, setDirectBuyItem] = useState(null);
+  const [appliedCoupon, setAppliedCoupon] = useState(() => {
+    const saved = localStorage.getItem('agriowl_coupon');
+    return saved ? JSON.parse(saved) : null;
+  });
 
   useEffect(() => {
     localStorage.setItem('agriowl_cart', JSON.stringify(cartItems));
   }, [cartItems]);
+
+  useEffect(() => {
+    if (appliedCoupon) {
+      localStorage.setItem('agriowl_coupon', JSON.stringify(appliedCoupon));
+    } else {
+      localStorage.removeItem('agriowl_coupon');
+    }
+  }, [appliedCoupon]);
+
+  const applyCoupon = (coupon) => {
+    setAppliedCoupon(coupon);
+  };
+
+  const removeCoupon = () => {
+    setAppliedCoupon(null);
+  };
 
   const addToCart = (product, selectedVariant, quantity = 1) => {
     setCartItems(prev => {
@@ -83,7 +103,10 @@ export const CartProvider = ({ children }) => {
       removeFromCart,
       clearCart,
       cartTotal,
-      cartCount
+      cartCount,
+      appliedCoupon,
+      applyCoupon,
+      removeCoupon
     }}>
       {children}
     </CartContext.Provider>

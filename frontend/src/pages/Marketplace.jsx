@@ -3,7 +3,7 @@ import { SlidersHorizontal, Search, X, Sparkles } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 import ProductCard from '../components/ProductCard';
 
-export default function Marketplace({ products, searchQuery, setSearchQuery, selectedCategory, setSelectedCategory, onSelectSize, onViewGuidelines, onBuyNow, setCurrentTab }) {
+export default function Marketplace({ products, searchQuery, setSearchQuery, selectedCategory, setSelectedCategory, onSelectSize, onViewGuidelines, onBuyNow, setCurrentTab, onViewDetail }) {
   const { language, t } = useLanguage();
   const [selectedCrop, setSelectedCrop] = useState('');
   const [sortBy, setSortBy] = useState('popular');
@@ -166,6 +166,7 @@ export default function Marketplace({ products, searchQuery, setSearchQuery, sel
               onViewGuidelines={onViewGuidelines}
               onBuyNow={onBuyNow}
               setCurrentTab={setCurrentTab}
+              onViewDetail={onViewDetail}
             />
           ))}
         </div>

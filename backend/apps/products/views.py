@@ -90,3 +90,28 @@ def product_detail_view(request, pk):
         product.active = False
         product.save()
         return Response({'success': True, 'message': 'Product deactivated (soft-deleted)'})
+
+
+@api_view(['POST'])
+@permission_classes([AllowAny])
+def restock_variant_view(request, variant_id):
+    """Admin: restock a product variant by adding stock quantity."""
+    try:
+        variant = ProductVariant.objects.get(pk=variant_id)
+    except ProductVariant.DoesNotExist:
+        return Response({'success': False, 'message': 'Variant not found'}, status=status.HTTP_404_NOT_FOUND)
+
+    qty = int(request.data.get('qty', 50))
+    if qty <= 0:
+        return Response({'success': False, 'message': 'Quantity must be positive'}, status=status.HTTP_400_BAD_REQUEST)
+
+    variant.stock = variant.stock + qty
+    variant.save(update_fields=['stock'])
+    return Response({
+        'success': True,
+        'message': f'Restocked {qty} units. New stock: {variant.stock}',
+        'variant_id': variant.id,
+        'product_name': variant.product.name,
+        'size': variant.size,
+        'new_stock': variant.stock,
+    })

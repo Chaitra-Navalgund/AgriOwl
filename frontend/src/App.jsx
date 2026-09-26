@@ -12,12 +12,14 @@ import CropMLRecommenderModal from './components/CropMLRecommenderModal';
 import FarmerAuthModal from './components/FarmerAuthModal';
 import Home from './pages/Home';
 import Marketplace from './pages/Marketplace';
+import AIAssistantPage from './pages/AIAssistantPage';
 import CartPage from './pages/CartPage';
 import CheckoutPage from './pages/CheckoutPage';
 import MyOrdersPage from './pages/MyOrdersPage';
 import OrderTrackingPage from './pages/OrderTrackingPage';
 import AdminLoginPage from './pages/AdminLoginPage';
 import AdminDashboard from './pages/AdminDashboard';
+import ProductDetailPage from './pages/ProductDetailPage';
 import { productApi } from './services/api';
 import { SEED_PRODUCTS } from './utils/seedData';
 
@@ -28,6 +30,7 @@ function AppInner() {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('');
   const [trackingOrderId, setTrackingOrderId] = useState('AGR12345');
+  const [selectedProductDetail, setSelectedProductDetail] = useState(null);
 
   // Products state
   const [products, setProducts] = useState(SEED_PRODUCTS);
@@ -82,6 +85,12 @@ function AppInner() {
     const selectedVariant = variant || product.variants?.[0];
     startDirectBuy(product, selectedVariant, 1);
     setCurrentTab('checkout');
+  };
+
+  const handleViewProductDetail = (product) => {
+    setSelectedProductDetail(product);
+    setCurrentTab('product-detail');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   // Admin-only guard
@@ -153,6 +162,7 @@ function AppInner() {
             onSelectSize={(p) => setSizeProduct(p)}
             onViewGuidelines={(p) => setGuidelinesProduct(p)}
             onBuyNow={handleBuyNow}
+            onViewDetail={handleViewProductDetail}
           />
         )}
         {currentTab === 'marketplace' && (
@@ -166,10 +176,31 @@ function AppInner() {
             onViewGuidelines={(p) => setGuidelinesProduct(p)}
             onBuyNow={handleBuyNow}
             setCurrentTab={setCurrentTab}
+            onViewDetail={handleViewProductDetail}
+          />
+        )}
+        {currentTab === 'product-detail' && (
+          <ProductDetailPage
+            product={selectedProductDetail}
+            setCurrentTab={setCurrentTab}
+            onViewGuidelines={(p) => setGuidelinesProduct(p)}
+            onOpenML={() => setMlOpen(true)}
+          />
+        )}
+        {(currentTab === 'assistant' || currentTab === 'ai-assistant') && (
+          <AIAssistantPage
+            onSelectProduct={(p) => setSizeProduct(p)}
+            setCurrentTab={setCurrentTab}
           />
         )}
         {currentTab === 'cart' && <CartPage setCurrentTab={setCurrentTab} />}
-        {currentTab === 'checkout' && <CheckoutPage setCurrentTab={setCurrentTab} setTrackingOrderId={setTrackingOrderId} />}
+        {currentTab === 'checkout' && (
+          <CheckoutPage 
+            setCurrentTab={setCurrentTab} 
+            setTrackingOrderId={setTrackingOrderId} 
+            onOpenFarmerAuth={() => setFarmerAuthOpen(true)}
+          />
+        )}
         {currentTab === 'orders' && (
           <MyOrdersPage
             setCurrentTab={setCurrentTab}

@@ -3,10 +3,11 @@ from .views import (
     create_order_view, order_list_view, order_detail_view,
     update_order_status_view, order_tracking_view, delete_order_view,
     admin_farmers_view, toggle_farmer_active_view, admin_revenue_view, admin_inventory_view,
-    create_razorpay_order_view, verify_razorpay_payment_view
+    create_razorpay_order_view, verify_razorpay_payment_view, validate_coupon_view
 )
 
 urlpatterns = [
+    path('coupons/validate/', validate_coupon_view, name='validate_coupon'),
     path('orders/', order_list_view, name='order_list'),
     path('orders/create/', create_order_view, name='create_order'),
     path('orders/<str:order_id>/razorpay/create/', create_razorpay_order_view, name='create_razorpay_order'),

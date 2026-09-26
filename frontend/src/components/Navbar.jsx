@@ -90,6 +90,13 @@ export default function Navbar({ onOpenVoiceSearch, onOpenML, onOpenFarmerAuth, 
                 {t('marketplace')}
               </button>
               <button 
+                onClick={() => setCurrentTab('assistant')} 
+                className={`flex items-center gap-1 hover:text-agri-primary transition ${currentTab === 'assistant' ? 'text-agri-primary border-b-2 border-agri-primary py-1' : ''}`}
+              >
+                <Sparkles className="w-3.5 h-3.5 text-amber-500" />
+                <span>{t('aiAssistant')}</span>
+              </button>
+              <button 
                 onClick={() => setCurrentTab('orders')} 
                 className={`hover:text-agri-primary transition ${currentTab === 'orders' ? 'text-agri-primary border-b-2 border-agri-primary py-1' : ''}`}
               >
@@ -214,8 +221,8 @@ export default function Navbar({ onOpenVoiceSearch, onOpenML, onOpenFarmerAuth, 
               <span>{t('myOrders')}</span>
             </button>
             <button 
-              onClick={() => { onOpenML(); setMobileMenuOpen(false); }} 
-              className="flex items-center gap-2.5 w-full text-left px-3 py-2.5 rounded-xl font-bold text-xs text-amber-900 bg-amber-50 border border-amber-200"
+              onClick={() => { setCurrentTab('assistant'); setMobileMenuOpen(false); }} 
+              className={`flex items-center gap-2.5 w-full text-left px-3 py-2.5 rounded-xl font-bold text-xs ${currentTab === 'assistant' ? 'bg-agri-primary text-white' : 'text-amber-900 bg-amber-50 border border-amber-200'}`}
             >
               <Sparkles className="w-4 h-4 text-amber-600" />
               <span>{t('aiAssistant')}</span>

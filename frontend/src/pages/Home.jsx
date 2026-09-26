@@ -3,7 +3,7 @@ import { ArrowRight, ShieldCheck, Truck, Sparkles, Globe, Award, Sprout, CheckCi
 import { useLanguage } from '../context/LanguageContext';
 import ProductCard from '../components/ProductCard';
 
-export default function Home({ setCurrentTab, onOpenML, onSelectCategory, products, onSelectSize, onViewGuidelines, onBuyNow }) {
+export default function Home({ setCurrentTab, onOpenML, onSelectCategory, products, onSelectSize, onViewGuidelines, onBuyNow, onViewDetail }) {
   const { language, t } = useLanguage();
 
   const trustBadges = [
@@ -54,7 +54,7 @@ export default function Home({ setCurrentTab, onOpenML, onSelectCategory, produc
             </button>
 
             <button 
-              onClick={onOpenML}
+              onClick={() => setCurrentTab ? setCurrentTab('assistant') : onOpenML()}
               className="touch-target px-6 sm:px-8 py-3.5 sm:py-4 bg-white/10 hover:bg-white/20 border-2 border-white/30 text-white font-bold text-sm sm:text-base rounded-2xl transition backdrop-blur-md flex items-center justify-center gap-2 active:scale-95 text-break-words"
             >
               <Sparkles className="w-4 h-4 sm:w-5 sm:h-5 text-agri-accent shrink-0" />
@@ -177,6 +177,7 @@ export default function Home({ setCurrentTab, onOpenML, onSelectCategory, produc
               onViewGuidelines={onViewGuidelines}
               onBuyNow={onBuyNow}
               setCurrentTab={setCurrentTab}
+              onViewDetail={onViewDetail}
             />
           ))}
         </div>

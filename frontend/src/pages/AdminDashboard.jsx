@@ -492,7 +492,19 @@ export default function AdminDashboard({ setCurrentTab }) {
               {activeSection === 'inventory' && (
                 <AdminInventory
                   inventory={inventory}
+                  setInventory={(updatedInv) => {
+                    const next = typeof updatedInv === 'function' ? updatedInv(inventory) : updatedInv;
+                    setInventory(next);
+                    setStored(STORE_KEYS.INVENTORY, next);
+                  }}
+                  products={products}
+                  setProducts={(updatedProds) => {
+                    const next = typeof updatedProds === 'function' ? updatedProds(products) : updatedProds;
+                    setProducts(next);
+                    setStored(STORE_KEYS.PRODUCTS, next);
+                  }}
                   searchQuery={searchQuery}
+                  onRefresh={loadData}
                 />
               )}
 
